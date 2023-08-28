@@ -26,9 +26,6 @@ jobs:
     - name: Run email_to_excel.py
       run: python email_to_excel.py
 
-    - name: Rename Excel file
-      run: mv stats.xlsx 2023_스퀴즈런_사용자지표_.xlsx
-
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
