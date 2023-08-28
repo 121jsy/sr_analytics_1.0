@@ -2,7 +2,7 @@ name: Update Excel
 
 on:
   schedule:
-    - cron: '55 12 * * *'
+    - cron: '0 19 * * *'
   workflow_dispatch:
 
 permissions:
