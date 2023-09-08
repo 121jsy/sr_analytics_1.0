@@ -23,7 +23,7 @@ from PIL import Image
 USER_TRAFFIC_INDIC = ['날짜', 'DAU(login)', 'DAU(chat)', 'DAU(quiz)', 'WAU(login)', 'MAU(login)',
                       'D+1 retention\n(login)', 'D+1 retention\n(nru login)', 'W+1 retention\n(login)',
                       'W+1 retention\n(new users login)', 'NRU (일일 신규 사용자 수)', 'CRU (누적 사용자 수)']
-GAME_STATISTICS_INDIC = ['날짜', '스퀴즈볼 총 획득량', '스퀴즈볼 총 사용량\n(소모성아이템 한정)', 'QAR\n퀴즈 정답률', '총 퀴즈 참여자 수', 'NQPP\n인당 퀴즈 참여',
+GAME_STATISTICS_INDIC = ['날짜', '스퀴즈볼 총 획득량\n(순수 획득)', '스퀴즈볼 총 사용량\n(소모성아이템 한정)', 'QAR\n퀴즈 정답률', '총 퀴즈 참여자 수', 'NQPP\n인당 퀴즈 참여',
                         'NCPP\n인당 채팅 참여', 'IUPP\n인당 아이템 사용']
 
 
@@ -89,6 +89,7 @@ def email_fetch_append():
     for indic_type in ['user_traffic', 'game_statistics', 'survivor']:
         sorted_lines.extend(data_sets[indic_type])
 
+    # Display components of fetched email
     print("From       : {}".format(msg.get("From")))
     print("To         : {}".format(msg.get("To")))
     print("Bcc        : {}".format(msg.get("Bcc")))
@@ -255,7 +256,7 @@ def draw_week(df_ut: pd.DataFrame, df_gs: pd.DataFrame):
         st.plotly_chart(fig2)
 
     with col1_3:
-        fig3 = px.bar(filtered_df_ut, x='날짜', y='D+1 retention\n(login)', title='Rentetion (???)', width=300, height=300)
+        fig3 = px.bar(filtered_df_ut, x='날짜', y='D+1 retention\n(login)', title='Rentetion (D+1 login)', width=300, height=300)
         fig3.update_layout(yaxis={'visible':False, 'showticklabels': False}, xaxis={'showticklabels': False}, title={'y':0.8}, yaxis_title=None, xaxis_title=None)
         st.plotly_chart(fig3)
 
@@ -277,7 +278,7 @@ def date_range(df):
     '''
 
     # Display the date_input widget 
-    date_range = st.date_input(":date: Select Date Range", [df['날짜'].min().date(), datetime.date.today()], 
+    date_range = st.date_input(":date: Select Date Range (Refresh to return to default range)", [df['날짜'].min().date(), datetime.date.today()], 
                                min_value=df['날짜'].min().date(), max_value=datetime.date.today())
 
     try:
@@ -286,7 +287,7 @@ def date_range(df):
         end_date = datetime.datetime.combine(date_range[1], datetime.datetime.min.time())
         filtered_df = df[(df['날짜'] >= start_date) & (df['날짜'] <= end_date)]
     except ValueError:
-        # Proceed when two dates are chosen
+        # Display error message when two dates are not chosen
         st.error("Please specify the end date")
         st.stop()
     except IndexError:
@@ -298,7 +299,7 @@ def date_range(df):
 
 def main():
 
-    email_fetch_append()
+    # email_fetch_append()
 
     df_ut, df_gs = load_from_file()
 
@@ -310,9 +311,11 @@ def main():
 
     col2_1, col2_2 = st.columns([0.17, 0.83])
 
+
     with col2_1:
         filtered_df = date_range(df_ut)
-    draw(filtered_df, ['DAU(login)', 'MAU(login)', 'WAU(login)'], 500)
+
+    draw(filtered_df, ['DAU(login)', 'WAU(login)', 'MAU(login)'], 500)
     
     
 
