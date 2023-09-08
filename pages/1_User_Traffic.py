@@ -3,14 +3,14 @@ from Dashboard import *
 import plotly.express as px 
 import streamlit as st
 import pandas as pd
-import datetime
+from PIL import Image
 
 
 # list of indicators to display in each excel sheets "User Traffic" and "Game Statistics"
 USER_TRAFFIC_INDIC = ['날짜', 'DAU(login)', 'DAU(chat)', 'DAU(quiz)', 'WAU(login)', 'MAU(login)',
                       'D+1 retention\n(login)', 'D+1 retention\n(nru login)', 'W+1 retention\n(login)',
                       'W+1 retention\n(new users login)', 'NRU (일일 신규 사용자 수)', 'CRU (누적 사용자 수)']
-GAME_STATISTICS_INDIC = ['날짜', '스퀴즈볼 총 획득량', '스퀴즈볼 총 사용량\n(소모성아이템 한정)', 'QAR\n퀴즈 정답률', '총 퀴즈 참여자 수', 'NQPP\n인당 퀴즈 참여',
+GAME_STATISTICS_INDIC = ['날짜', '스퀴즈볼 총 획득량\n(순수 획득)', '스퀴즈볼 총 사용량\n(소모성아이템 한정)', 'QAR\n퀴즈 정답률', '총 퀴즈 참여자 수', 'NQPP\n인당 퀴즈 참여',
                         'NCPP\n인당 채팅 참여', 'IUPP\n인당 아이템 사용']
 
 
@@ -27,8 +27,8 @@ def user_traffic_draw(df, indicator):
     with col2_2:
         display_table(df, indicator)
 
-
-st.set_page_config(layout="wide")
+im = Image.open("squizrun_png.png")
+st.set_page_config(page_title="Squizrun Analytics", page_icon=im, layout="wide")
 st.title("USER TRAFFIC")
 
 df_ut, df_gs = load_from_file()
@@ -41,7 +41,7 @@ with col1_1:
     option = st.selectbox(
         '지표 선택',
         ('-', 'DAU', 'WAU', 'MAU', 'Retention', 'NRU', 'CRU'))
-  
+    
 with col1_5:
     filtered_df = date_range(df_ut)
 
@@ -70,7 +70,6 @@ if option == 'DAU':
 
 elif option == 'WAU':
     indicator = 'WAU(login)'
-    # filtered_df = date_range(df_ut)
     user_traffic_draw(filtered_df, indicator)
 
 elif option == 'MAU':
@@ -105,4 +104,3 @@ elif option == 'NRU':
 elif option == 'CRU':
     indicator = 'CRU (누적 사용자 수)'
     user_traffic_draw(filtered_df, indicator)
-
