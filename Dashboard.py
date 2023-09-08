@@ -16,6 +16,7 @@ import plotly.express as px
 import streamlit as st
 import pandas as pd
 import datetime
+from PIL import Image
 
 
 # list of indicators to display in each excel sheets "User Traffic" and "Game Statistics"
@@ -297,12 +298,14 @@ def date_range(df):
 
 def main():
 
-    df_ut, df_gs = load_from_file()
-
     email_fetch_append()
 
-    st.set_page_config(layout="wide")
+    df_ut, df_gs = load_from_file()
+
+    im = Image.open("squizrun_png.png")
+    st.set_page_config(page_title="Squizrun Analytics", page_icon=im, layout="wide")
     st.title("SQUIZRUN ANALYTICS")
+
     draw_week(df_ut, df_gs)
 
     col2_1, col2_2 = st.columns([0.17, 0.83])
